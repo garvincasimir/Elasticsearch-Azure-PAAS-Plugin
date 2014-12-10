@@ -16,14 +16,11 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.discovery.zen.ping.unicast.UnicastHostsProvider;
 import org.elasticsearch.transport.TransportService;
 
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Type;
-import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 import com.google.gson.Gson;
 
 /**
@@ -77,19 +74,18 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
         try {
         cachedDiscoNodes = Lists.newArrayList();
 
-        List<RuntimeInstance> response = instances();
+        List<ElasticsearchNode> response = instances();
 
         logger.debug("Total instances: " + response.size());
 
 
-            for (RuntimeInstance instance : response) {
+            for (ElasticsearchNode instance : response) {
                 String networkAddress = null;
-                // Let's detect if we want to use public or private IP
-
-                    if (instance.getIp() != null && instance.getPort() !=null) {
+                     logger.trace("Ip: {} Port:{} Name:{}",instance.getIp(),instance.getPort(),instance.getNodeName())  ;
+                    if (instance.getIp() != null && instance.getPort() >1) {
                         networkAddress = instance.getIp() + ":" + instance.getPort() ;
                     } else {
-                        logger.trace("no public ip provided ignoring {}", instance.getNodeName());
+                        logger.trace("no ip provided ignoring {}", instance.getNodeName());
                     }
 
 
@@ -115,8 +111,8 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
         return cachedDiscoNodes;
     }
 
-    private List<RuntimeInstance> instances() {
-        List<RuntimeInstance> ipset = new ArrayList<RuntimeInstance>();
+    private List<ElasticsearchNode> instances() {
+        List<ElasticsearchNode> ipset = new ArrayList<ElasticsearchNode>();
         Gson gson = new Gson();
 
         try {
@@ -126,7 +122,7 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
             String runtimeInfo = pipe.readLine();
             logger.debug(runtimeInfo);
 
-            Type runtimeListType = new TypeToken<List<RuntimeInstance>>() {}.getType();
+            Type runtimeListType = new TypeToken<List<ElasticsearchNode>>() {}.getType();
             ipset = gson.fromJson(runtimeInfo,runtimeListType) ;
 
             pipe.close();

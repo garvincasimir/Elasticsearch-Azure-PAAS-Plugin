@@ -55,22 +55,6 @@ public class AzureRuntimeDiscoveryModule extends ZenDiscoveryModule {
     }
 
     public static boolean isDiscoveryReady(Settings settings, ESLogger logger) {
-          /*
-        if(isPropertyMissing(settings,"cloud.azureruntime." + AzureRuntimeUnicastHostsProvider.BRIDGE ,logger)){
-            logger.error("Property missing: {}",AzureRuntimeUnicastHostsProvider.BRIDGE);
-            return false;
-        }
-
-        if(isPropertyMissing(settings,"discovery.type" ,logger)){
-            logger.warn("No discovery type set");
-            return false;
-        }
-
-        if(settings.get("discovery.type") != "azureruntime") {
-            logger.warn("Azure Runtime not set as discovery method");
-            return false;
-        }
-            */
 
         logger.trace("all required properties for azure discovery are set!");
 

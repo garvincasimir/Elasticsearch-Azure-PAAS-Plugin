@@ -33,15 +33,6 @@ public class AzureRuntimePlugin extends AbstractPlugin {
         return "Cloud Azure Runtime Plugin";
     }
 
-    /*
-    @Override
-    public Collection<Class<? extends Module>> modules() {
-        Collection<Class<? extends Module>> modules = Lists.newArrayList();
-        if (AzureRuntimeDiscoveryModule.isDiscoveryReady(settings,logger)) {
-            modules.add(AzureRuntimeDiscoveryModule.class);
-        }
-        return modules;
-    }
-         */
+
 
 }
