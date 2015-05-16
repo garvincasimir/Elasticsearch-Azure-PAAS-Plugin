@@ -37,7 +37,7 @@ import org.elasticsearch.discovery.zen.ping.unicast.UnicastZenPing;
 import org.elasticsearch.node.settings.NodeSettingsService;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
-
+import org.elasticsearch.cluster.settings.DynamicSettings;
 
 /**
  *
@@ -50,9 +50,9 @@ public class AzureRuntimeDiscovery extends ZenDiscovery {
     public AzureRuntimeDiscovery(Settings settings, ClusterName clusterName, ThreadPool threadPool, TransportService transportService,
                                  ClusterService clusterService, NodeSettingsService nodeSettingsService, ZenPingService pingService,
                                  DiscoveryNodeService discoveryNodeService, NetworkService networkService,
-                                 DiscoverySettings discoverySettings,ElectMasterService electMasterService) {
+                                 DiscoverySettings discoverySettings,ElectMasterService electMasterService, DynamicSettings dynamicSettings) {
         super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService,
-                discoveryNodeService, pingService, electMasterService, discoverySettings);
+                discoveryNodeService, pingService, electMasterService, discoverySettings,dynamicSettings);
         if (settings.getAsBoolean("cloud.enabled", true)) {
             ImmutableList<? extends ZenPing> zenPings = pingService.zenPings();
             UnicastZenPing unicastZenPing = null;
