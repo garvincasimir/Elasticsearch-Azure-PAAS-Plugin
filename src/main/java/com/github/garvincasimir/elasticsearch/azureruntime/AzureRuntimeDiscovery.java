@@ -19,11 +19,11 @@
 
 package com.github.garvincasimir.elasticsearch.azureruntime;
 
-import org.elasticsearch.Version;
-
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.cluster.ClusterService;
 import org.elasticsearch.cluster.node.DiscoveryNodeService;
+import org.elasticsearch.cluster.settings.ClusterDynamicSettings;
+import org.elasticsearch.cluster.settings.DynamicSettings;
 import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.network.NetworkService;
@@ -50,9 +50,10 @@ public class AzureRuntimeDiscovery extends ZenDiscovery {
     public AzureRuntimeDiscovery(Settings settings, ClusterName clusterName, ThreadPool threadPool, TransportService transportService,
                                  ClusterService clusterService, NodeSettingsService nodeSettingsService, ZenPingService pingService,
                                  DiscoveryNodeService discoveryNodeService, NetworkService networkService,
-                                 DiscoverySettings discoverySettings,ElectMasterService electMasterService) {
+                                 ElectMasterService electMasterService, DiscoverySettings discoverySettings, 
+                                 @ClusterDynamicSettings DynamicSettings dynamicSettings) {
         super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService,
-                discoveryNodeService, pingService, electMasterService, discoverySettings);
+                discoveryNodeService, pingService, electMasterService, discoverySettings, dynamicSettings);
         if (settings.getAsBoolean("cloud.enabled", true)) {
             ImmutableList<? extends ZenPing> zenPings = pingService.zenPings();
             UnicastZenPing unicastZenPing = null;
