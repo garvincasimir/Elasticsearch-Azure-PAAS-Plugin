@@ -23,52 +23,28 @@ import org.elasticsearch.Version;
 
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.cluster.ClusterService;
-import org.elasticsearch.cluster.node.DiscoveryNodeService;
-import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.network.NetworkService;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.discovery.DiscoverySettings;
 import org.elasticsearch.discovery.zen.ZenDiscovery;
 import org.elasticsearch.discovery.zen.elect.ElectMasterService;
-import org.elasticsearch.discovery.zen.ping.ZenPing;
 import org.elasticsearch.discovery.zen.ping.ZenPingService;
-import org.elasticsearch.discovery.zen.ping.unicast.UnicastZenPing;
 import org.elasticsearch.node.settings.NodeSettingsService;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
-import org.elasticsearch.cluster.settings.DynamicSettings;
 
 /**
  *
  */
 public class AzureRuntimeDiscovery extends ZenDiscovery {
 
-    public static final String AZURERUNTIME = "﻿com.github.garvincasimir.elasticsearch.azureruntime.AzureRuntimeDiscoveryModule";
+    public static final String AZURERUNTIME = "azureruntime";
 
     @Inject
     public AzureRuntimeDiscovery(Settings settings, ClusterName clusterName, ThreadPool threadPool, TransportService transportService,
-                                 ClusterService clusterService, NodeSettingsService nodeSettingsService, ZenPingService pingService,
-                                 DiscoveryNodeService discoveryNodeService, NetworkService networkService,
-                                 DiscoverySettings discoverySettings,ElectMasterService electMasterService, DynamicSettings dynamicSettings) {
-        super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService,
-                discoveryNodeService, pingService, electMasterService, discoverySettings,dynamicSettings);
-        if (settings.getAsBoolean("cloud.enabled", true)) {
-            ImmutableList<? extends ZenPing> zenPings = pingService.zenPings();
-            UnicastZenPing unicastZenPing = null;
-            for (ZenPing zenPing : zenPings) {
-                if (zenPing instanceof UnicastZenPing) {
-                    unicastZenPing = (UnicastZenPing) zenPing;
-                    break;
-                }
-            }
-
-            if (unicastZenPing != null) {
-                unicastZenPing.addHostsProvider(new AzureRuntimeUnicastHostsProvider(settings, transportService, networkService));
-                pingService.zenPings(ImmutableList.of(unicastZenPing));
-            } else {
-                logger.warn("failed to apply azure unicast discovery, no unicast ping found");
-            }
-        }
+                               ClusterService clusterService, NodeSettingsService nodeSettingsService, ZenPingService pingService,
+                               DiscoverySettings discoverySettings,
+                               ElectMasterService electMasterService) {
+        super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService, pingService, electMasterService, discoverySettings);
     }
 }

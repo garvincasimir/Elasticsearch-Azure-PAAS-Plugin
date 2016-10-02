@@ -6,7 +6,6 @@ package com.github.garvincasimir.elasticsearch.azureruntime;
 import com.google.gson.reflect.TypeToken;
 import org.elasticsearch.Version;
 import org.elasticsearch.cluster.node.DiscoveryNode;
-import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.component.AbstractComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.network.NetworkService;
@@ -49,11 +48,11 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
         this.transportService = transportService;
         this.networkService = networkService;
 
-        this.runtimeBridge = componentSettings.get(BRIDGE,
+        this.runtimeBridge = settings.get(BRIDGE,
                 settings.get("cloud.azureruntime." + BRIDGE));
 
 
-        this.refreshInterval = componentSettings.getAsTime(REFRESH,
+        this.refreshInterval = settings.getAsTime(REFRESH,
                 settings.getAsTime("cloud.azureruntime." + REFRESH, TimeValue.timeValueSeconds(0)));
 
     }
@@ -72,7 +71,7 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
         logger.debug("start building nodes list using Azure API");
 
         try {
-        cachedDiscoNodes = Lists.newArrayList();
+        cachedDiscoNodes = new ArrayList<>();
 
         List<ElasticsearchNode> response = instances();
 
@@ -93,7 +92,7 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
                     logger.debug("Can't addd endooint for {}",instance.getNodeName());
 
                 } else {
-                    TransportAddress[] addresses = transportService.addressesFromString(networkAddress);
+                    TransportAddress[] addresses = transportService.addressesFromString(networkAddress,1);
                     // we only limit to 1 addresses, makes no sense to ping 100 ports
                     logger.trace("adding {}, transport_address {}", networkAddress, addresses[0]);
                     cachedDiscoNodes.add(new DiscoveryNode("#cloud-" + instance.getNodeName(), addresses[0], Version.CURRENT));
