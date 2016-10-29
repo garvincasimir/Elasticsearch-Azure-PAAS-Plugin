@@ -15,8 +15,12 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.discovery.zen.ping.unicast.UnicastHostsProvider;
 import org.elasticsearch.transport.TransportService;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Type;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +33,13 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
 
     public static final String REFRESH = "refresh_interval";
     public static final String BRIDGE = "bridge";
-    public static final String BRIDGE_ENV = "BRIDGE_NAME";
+    public static final String BRIDGE_ENV = "BRIDGE_PORT";
 
     private TransportService transportService;
     private NetworkService networkService;
 
     private final TimeValue refreshInterval;
-    private String runtimeBridge;
+    private String runtimePort;
     private long lastRefresh;
     private List<DiscoveryNode> cachedDiscoNodes;
 
@@ -49,7 +53,7 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
         this.transportService = transportService;
         this.networkService = networkService;
 
-        this.runtimeBridge = System.getenv(BRIDGE_ENV);
+        this.runtimePort = System.getenv(BRIDGE_ENV);
 
 
         this.refreshInterval = settings.getAsTime(REFRESH,
@@ -115,16 +119,16 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
         Gson gson = new Gson();
 
         try {
-            // Connect to the pipe
-            RandomAccessFile pipe = new RandomAccessFile("\\\\.\\pipe\\" + runtimeBridge, "rw");
 
-            String runtimeInfo = pipe.readLine();
-            //logger.debug(runtimeInfo);
+
+            URLConnection conn = new URL("http://localhost:" + runtimePort).openConnection();
+
+            InputStreamReader reader = new InputStreamReader(conn.getInputStream());
 
             Type runtimeListType = new TypeToken<List<ElasticsearchNode>>() {}.getType();
-            ipset = gson.fromJson(runtimeInfo,runtimeListType) ;
+            ipset = gson.fromJson(reader,runtimeListType) ;
+            reader.close();
 
-            pipe.close();
         } catch (Exception e) {
             //logger.error(e.getMessage());
         }
