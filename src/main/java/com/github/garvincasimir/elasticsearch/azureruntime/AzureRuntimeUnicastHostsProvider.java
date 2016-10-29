@@ -29,6 +29,7 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
 
     public static final String REFRESH = "refresh_interval";
     public static final String BRIDGE = "bridge";
+    public static final String BRIDGE_ENV = "BRIDGE_NAME";
 
     private TransportService transportService;
     private NetworkService networkService;
@@ -48,8 +49,7 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
         this.transportService = transportService;
         this.networkService = networkService;
 
-        this.runtimeBridge = settings.get(BRIDGE,
-                settings.get("cloud.azureruntime." + BRIDGE));
+        this.runtimeBridge = System.getenv(BRIDGE_ENV);
 
 
         this.refreshInterval = settings.getAsTime(REFRESH,
