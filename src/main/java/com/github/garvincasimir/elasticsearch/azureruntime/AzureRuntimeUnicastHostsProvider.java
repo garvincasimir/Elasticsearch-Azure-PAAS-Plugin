@@ -63,49 +63,49 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
         if (refreshInterval.millis() != 0) {
             if (cachedDiscoNodes != null &&
                     (refreshInterval.millis() < 0 || (System.currentTimeMillis() - lastRefresh) < refreshInterval.millis())) {
-                if (logger.isTraceEnabled()) logger.trace("using cache to retrieve node list");
+
                 return cachedDiscoNodes;
             }
             lastRefresh = System.currentTimeMillis();
         }
-        logger.debug("start building nodes list using Azure API");
+        //logger.debug("start building nodes list using Azure API");
 
         try {
         cachedDiscoNodes = new ArrayList<>();
 
         List<ElasticsearchNode> response = instances();
 
-        logger.debug("Total instances: " + response.size());
+        //logger.debug("Total instances: " + response.size());
 
 
             for (ElasticsearchNode instance : response) {
                 String networkAddress = null;
-                     logger.trace("Ip: {} Port:{} Name:{}",instance.getIp(),instance.getPort(),instance.getNodeName())  ;
+                    // logger.trace("Ip: {} Port:{} Name:{}",instance.getIp(),instance.getPort(),instance.getNodeName())  ;
                     if (instance.getIp() != null && instance.getPort() >1) {
                         networkAddress = instance.getIp() + ":" + instance.getPort() ;
                     } else {
-                        logger.trace("no ip provided ignoring {}", instance.getNodeName());
+                        //logger.trace("no ip provided ignoring {}", instance.getNodeName());
                     }
 
 
                 if (networkAddress == null) {
-                    logger.debug("Can't addd endooint for {}",instance.getNodeName());
+                    //logger.debug("Can't addd endooint for {}",instance.getNodeName());
 
                 } else {
                     TransportAddress[] addresses = transportService.addressesFromString(networkAddress,1);
                     // we only limit to 1 addresses, makes no sense to ping 100 ports
-                    logger.trace("adding {}, transport_address {}", networkAddress, addresses[0]);
+                    //logger.trace("adding {}, transport_address {}", networkAddress, addresses[0]);
                     cachedDiscoNodes.add(new DiscoveryNode("#cloud-" + instance.getNodeName(), addresses[0], Version.CURRENT));
                 }
 
             }
         } catch (Throwable e) {
-            logger.warn("Exception caught during discovery {} : {}", e.getClass().getName(), e.getMessage());
-            logger.trace("Exception caught during discovery", e);
+            //logger.warn("Exception caught during discovery {} : {}", e.getClass().getName(), e.getMessage());
+            //logger.trace("Exception caught during discovery", e);
         }
 
-        logger.debug("{} node(s) added", cachedDiscoNodes.size());
-        logger.debug("using dynamic discovery nodes {}", cachedDiscoNodes);
+        //logger.debug("{} node(s) added", cachedDiscoNodes.size());
+        //logger.debug("using dynamic discovery nodes {}", cachedDiscoNodes);
 
         return cachedDiscoNodes;
     }
@@ -119,14 +119,14 @@ public class AzureRuntimeUnicastHostsProvider extends AbstractComponent implemen
             RandomAccessFile pipe = new RandomAccessFile("\\\\.\\pipe\\" + runtimeBridge, "rw");
 
             String runtimeInfo = pipe.readLine();
-            logger.debug(runtimeInfo);
+            //logger.debug(runtimeInfo);
 
             Type runtimeListType = new TypeToken<List<ElasticsearchNode>>() {}.getType();
             ipset = gson.fromJson(runtimeInfo,runtimeListType) ;
 
             pipe.close();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            //logger.error(e.getMessage());
         }
 
 

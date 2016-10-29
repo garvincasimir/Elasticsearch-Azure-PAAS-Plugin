@@ -22,14 +22,14 @@ package com.github.garvincasimir.elasticsearch.azureruntime;
 import org.elasticsearch.Version;
 
 import org.elasticsearch.cluster.ClusterName;
-import org.elasticsearch.cluster.ClusterService;
+import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.discovery.DiscoverySettings;
 import org.elasticsearch.discovery.zen.ZenDiscovery;
-import org.elasticsearch.discovery.zen.elect.ElectMasterService;
+import org.elasticsearch.discovery.zen.ElectMasterService;
 import org.elasticsearch.discovery.zen.ping.ZenPingService;
-import org.elasticsearch.node.settings.NodeSettingsService;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
 
@@ -42,9 +42,9 @@ public class AzureRuntimeDiscovery extends ZenDiscovery {
 
     @Inject
     public AzureRuntimeDiscovery(Settings settings, ClusterName clusterName, ThreadPool threadPool, TransportService transportService,
-                               ClusterService clusterService, NodeSettingsService nodeSettingsService, ZenPingService pingService,
-                               DiscoverySettings discoverySettings,
-                               ElectMasterService electMasterService) {
-        super(settings, clusterName, threadPool, transportService, clusterService, nodeSettingsService, pingService, electMasterService, discoverySettings);
+                                 ClusterService clusterService, ClusterSettings clusterSettings,  ZenPingService pingService,
+                                 DiscoverySettings discoverySettings,
+                                 ElectMasterService electMasterService) {
+        super(settings, threadPool, transportService, clusterService,clusterSettings, pingService, electMasterService);
     }
 }

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.garvincasimir</groupId>
     <artifactId>elasticsearch-azureruntime</artifactId>
-    <version>2.4.1.2-SNAPSHOT</version>
+    <version>5.0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Azure Runtime Plugin for Elasticsearch</name>
     <description>The Azure Runtime Plugin works together with the RoleEntryPoint to allow unicast discovery over IPC</description>
@@ -32,7 +32,7 @@
     </parent>
 
     <properties>
-        <elasticsearch.version>2.4.1</elasticsearch.version>
+        <elasticsearch.version>5.0.0</elasticsearch.version>
         <elasticsearch.plugin.name>elasticsearch-azureruntime</elasticsearch.plugin.name>
     </properties>
 
