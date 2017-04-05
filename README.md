@@ -1,4 +1,4 @@
-Elasticsearch-Azure-PAAS-Plugin
+Elasticsearch-Azure-PAAS-Plugin [Deprecated]
 ===============================
 
 Elasticsearch Discovery Plugin used to support the Elasticsearch-Azure-PAAS project
